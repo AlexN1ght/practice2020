@@ -3,8 +3,10 @@ import face_recognition
 import pickle
 
 BD = [] #тут из файла BD.sm
+#ptivate_bds = {}
 
-def BDInit():
+def bd_init():
+    #добавить инициализацию приватной БД
     with open("BD.sm", "rb") as FacesBD:
         while True:    
             try:
@@ -14,7 +16,11 @@ def BDInit():
                 break
             BD.append((face, name))
 
-def BDAdd(image, name):
+def private_bd_add(id, image, name):
+
+def private_bd_del(id, name):
+
+def public_bd_add(image, name):
 
     input_photo = face_recognition.load_image_file(image)
     if len(face_recognition.face_encodings(input_photo)) == 0:
@@ -29,7 +35,8 @@ def BDAdd(image, name):
     
     return True
 
-def FindFaces(inputImage):
+def find_faces(inputImage, id):
+    #общая плюс приватная
 
     input_photo = face_recognition.load_image_file(inputImage)
     face_locations = face_recognition.face_locations(input_photo, model="cnn")

@@ -1,7 +1,7 @@
 import telebot
 import requests
 from enum import Enum
-from face_rec import FindFaces, BDAdd, BDInit
+from face_rec import find_faces, public_bd_add, bd_init
 
 
 class Status(Enum):
@@ -16,7 +16,7 @@ TOKEN = '1089518853:AAEEs1i735_N89TCtkMRwinA_kz3yKd8Ykg'
 bot = telebot.TeleBot(TOKEN)
 
 user_stat = {}
-BDInit()
+bd_init()
 
 def check_usr(message):
 	if not user_stat.get(message.from_user.id):
@@ -56,7 +56,7 @@ def handle_photo(message):
 		adding_photo.write(request.content)
 
 		bot.send_message(message.chat.id, "Processing")
-		name_list = FindFaces("tmp.jpg")
+		name_list = find_faces("tmp.jpg")
 		out_str = ""
 		for name in name_list:
 			out_str = out_str + name + '\n'
@@ -79,7 +79,7 @@ def handle_text(message):
 		adding_photo = open("tmp.jpg", "wb")
 		adding_photo.write(user_stat[message.from_user.id][1])
 		
-		if BDAdd("tmp.jpg", user_stat[message.from_user.id][2]):
+		if public_bd_add("tmp.jpg", user_stat[message.from_user.id][2]):
 			bot.reply_to(message, "Person successfully added")
 		else:
 			bot.reply_to(message, "Something went wrong. No faces found")
