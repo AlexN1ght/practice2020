@@ -1,6 +1,8 @@
 import telebot
 import requests
 from enum import Enum
+from face_rec import FindFaces, BDAdd, BDInit
+
 
 class Status(Enum):
 	FREE = 0
@@ -14,6 +16,7 @@ TOKEN = '1089518853:AAEEs1i735_N89TCtkMRwinA_kz3yKd8Ykg'
 bot = telebot.TeleBot(TOKEN)
 
 user_stat = {}
+BDInit()
 
 def check_usr(message):
 	if not user_stat.get(message.from_user.id):
@@ -23,7 +26,13 @@ def check_usr(message):
 def send_welcome(message):
 	check_usr(message)
 	user_stat[message.from_user.id] = [Status.FREE,0,0]
-	bot.reply_to(message, "Welcome to open fasedetection bot. You can add new fases in the libruary by entering \"\\add\" command and detect faces by just sending group photo")
+	bot.reply_to(message, "Welcome to open fasedetection bot. You can add new fases in the libruary by entering /add command and detect faces by just sending photo with some faces. You can also type /annalize to do so")
+
+@bot.message_handler(commands=['analize'])
+def handle_analize(message):
+	check_usr(message)
+	user_stat[message.from_user.id] = [Status.FREE,0,0]
+	bot.reply_to(message, "Send photo to analize or add new")
 	
 @bot.message_handler(commands=['add'])
 def handle_add(message):
@@ -43,12 +52,14 @@ def handle_photo(message):
 	elif user_stat[message.from_user.id][0] == Status.FREE:
 		photo_path = bot.get_file(message.photo[1].file_id).file_path
 		request = requests.get('https://api.telegram.org/file/bot{}/{}'.format(TOKEN, photo_path))
+		adding_photo = open("tmp.jpg", "wb")
+		adding_photo.write(request.content)
+
 		bot.send_message(message.chat.id, "Processing")
-		#name_list = FindeFaces(request):
-		name_list = []
+		name_list = FindFaces("tmp.jpg")
 		out_str = ""
 		for name in name_list:
-			out_str = name + '\n'
+			out_str = out_str + name + '\n'
 		if out_str == "":
 			out_str = "Could not find known faces"
 		else :
@@ -64,15 +75,14 @@ def handle_text(message):
 	if user_stat[message.from_user.id][0] == Status.ADD_NAME:
 		user_stat[message.from_user.id][2] = message.text
 		print(user_stat[message.from_user.id][2])
-		#debugging pritos
-		adding_photo = open("tmp/test.jpg", "wb")
+		#debugging photos
+		adding_photo = open("tmp.jpg", "wb")
 		adding_photo.write(user_stat[message.from_user.id][1])
 		
-		#if BDAdd(user_stat[message.from_user.id][1]), user_stat[message.from_user.id][1]):
-		if True:
+		if BDAdd("tmp.jpg", user_stat[message.from_user.id][2]):
 			bot.reply_to(message, "Person successfully added")
 		else:
-			bot.reply_to(message, "Something went wrong. Try anain later")
+			bot.reply_to(message, "Something went wrong. No faces found")
 		user_stat[message.from_user.id][0] = Status.FREE
 	else:
 		bot.reply_to(message, "You'r doing something wrong")
