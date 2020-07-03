@@ -21,10 +21,9 @@ def BDAdd(image, name):
     BD.append((face_encoding, name))
 
     #Сохраняем каждый раз в файл BD.sm обновки BD
-    with open ("BD.sm", "wb") as file:
-        for face, name in BD:
-            pickle.dump(face, file)
-            pickle.dump(name, file)
+    with open ("BD.sm", "ab") as file:
+        pickle.dump(face_encoding, file)
+        pickle.dump(name, file)
     
     return True
 
