@@ -1,2 +1,4 @@
 tmp/test.jpg
 tmp.jpg
+__pycache__/*
+src/__pycache__/*
