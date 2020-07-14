@@ -15,7 +15,7 @@ class Status(Enum):
     ADD_NAME_PU = 4
     DEL_PR = 5
 
-TOKEN = '1089518853:AAEEs1i735_N89TCtkMRwinA_kz3yKd8Ykg'
+TOKEN = '1089518853:AAGfG2OCrrH_IhU5AX-OFzagjo7bjjeV14E'
 #not an actual token
 
 

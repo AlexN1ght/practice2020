@@ -37,10 +37,8 @@ def private_bd_add(person_id, image, name):
     if not PRIVATE_BDS.get(person_id, False):
         PRIVATE_BDS[person_id] = []
     PRIVATE_BDS[person_id].append((face_encoding, name))
-
     with open("PrivateBD.sm", "wb") as faces_bd:
         pickle.dump(PRIVATE_BDS, faces_bd)
-
     return True
 
 def del_names_from_list(person_id, name):

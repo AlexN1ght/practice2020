@@ -21,10 +21,15 @@ def list_bd():
 list_bd()
 
 while True:
+    print("Enter del to delete or q to quit")
     command = input()
     if command == "del":
-        num_to_del = int(input())
-        BD.pop(num_to_del)
+        print("Enter start number to delete")
+        num_to_del_start = int(input())
+        print("Enter end number to delete")
+        num_to_del_end = int(input())
+        for i in range(num_to_del_end - num_to_del_start + 1):
+            BD.pop(num_to_del_start)
         with open ("BD.sm", "wb") as FacesBD:
             for face_encoding, name in BD:
                 pickle.dump(face_encoding, FacesBD)
